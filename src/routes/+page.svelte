@@ -9,8 +9,8 @@
 
 
 <div class="canvas-container">
-<Canvas>
-    <Scene bind:this={scene}/>
+<Canvas >
+    <Scene bind:this={scene} linear flat/>
 </Canvas>
 </div>
 

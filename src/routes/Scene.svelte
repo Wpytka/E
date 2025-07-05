@@ -1,6 +1,6 @@
 <script>
   import { T, useTask } from "@threlte/core";
-  import { HTML, OrbitControls, useGltf } from "@threlte/extras";
+  import { OrbitControls, useGltf } from "@threlte/extras";
   import fragShader from "/src/lib/assets/shaders/backgroud-fragment.glsl?raw";
   import vertexShader from "/src/lib/assets/shaders/vertex.glsl?raw";
 
@@ -49,8 +49,8 @@
   <OrbitControls />
 </T.PerspectiveCamera>
 
-<T.DirectionalLight intensity={4} position={[20, 60, 10]}/>
-<T.AmbientLight intensity={2}/>
+<T.DirectionalLight intensity={1} position={[20, 60, 10]}/>
+<T.AmbientLight intensity={1}/>
 
 <T.Mesh scale={200}>
   <T.BoxGeometry />
@@ -70,11 +70,32 @@
     geometry={$gltfArrow.nodes.Cone.geometry}
   >
     <T.MeshStandardMaterial
-      color={currentColor}
-      metalness={0.7}
+      color={newGreen}
+      metalness={0.8}
       roughness={0.8}
       depthTest
       depthWrite
+      transparent={true}
+      opacity={0.6}
+      
+    />
+  </T.Mesh>
+  <T.Mesh
+    scale={4}
+    rotation.x={Math.PI / 2 + woble}
+    rotation.z={-rotation+0.1}
+    rotation.y={0.1}
+    geometry={$gltfArrow.nodes.Cone.geometry}
+  >
+    <T.MeshStandardMaterial
+      color={newOrange}
+      metalness={0.8}
+      roughness={0.8}
+      depthTest
+      depthWrite
+      transparent={true}
+      opacity={0.6}
+      
     />
   </T.Mesh>
 {/if}
