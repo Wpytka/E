@@ -3,6 +3,7 @@
   import { OrbitControls, useGltf } from "@threlte/extras";
   import fragShader from "/src/lib/assets/shaders/backgroud-fragment.glsl?raw";
   import vertexShader from "/src/lib/assets/shaders/vertex.glsl?raw";
+  import { base } from '$app/paths'
 
   let rotation = $state(0);
   let woble = $state(0);
@@ -40,8 +41,8 @@
     }
   });
 
-  const gltfArrow = useGltf("/arrow.glb");
-  const gltfText = useGltf("/engineered.glb");
+  const gltfArrow = useGltf(`${base}/arrow.glb`);
+  const gltfText = useGltf(`${base}/engineered.glb`);
 </script>
 
 
