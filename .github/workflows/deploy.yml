@@ -32,6 +32,11 @@ jobs:
         run: |
           npm run build
 
+      - name: Copy assets to build folder
+        run: |
+          mkdir -p build/src/lib/assets/
+          cp -r src/lib/assets/* build/src/lib/assets/
+
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
