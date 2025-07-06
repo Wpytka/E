@@ -65,19 +65,20 @@
 {#if $gltfArrow}
   <T.Mesh
     scale={4}
-    rotation.x={Math.PI / 2 + woble}
+    rotation.x={woble}
     rotation.z={-rotation}
     geometry={$gltfArrow.nodes.Cone.geometry}
   >
-    <T.MeshStandardMaterial
+    <T.MeshPhysicalMaterial
       color={newGreen}
-      metalness={0.8}
-      roughness={0.8}
-      depthTest
-      depthWrite
-      transparent={true}
-      opacity={0.6}
-      
+      vertexColors= {false}
+      transmission= {1.0}
+      thickness= {0.70}
+      roughness= {0.0}
+      metalness= {0.0}
+      transparent= {true}
+      opacity = {0.9}
+      side={T.DoubleSide}
     />
   </T.Mesh>
   <T.Mesh
@@ -87,15 +88,16 @@
     rotation.y={0.1}
     geometry={$gltfArrow.nodes.Cone.geometry}
   >
-    <T.MeshStandardMaterial
+    <T.MeshPhysicalMaterial
       color={newOrange}
-      metalness={0.8}
-      roughness={0.8}
-      depthTest
-      depthWrite
+      vertexColors= {false}
+      transmission= {1.0}
+      thickness= {0.70}
+      roughness= {0.0}
+      metalness= {0.0}
       transparent={true}
-      opacity={0.6}
-      
+      opacity = {0.9}
+      side={T.DoubleSide}
     />
   </T.Mesh>
 {/if}
