@@ -40,8 +40,8 @@
     }
   });
 
-  const gltfArrow = useGltf("/src/lib/assets/arrow.glb");
-  const gltfText = useGltf("/src/lib/assets/engineered.glb");
+  const gltfArrow = useGltf("/arrow.glb");
+  const gltfText = useGltf("/engineered.glb");
 </script>
 
 
