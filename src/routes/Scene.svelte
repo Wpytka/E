@@ -1,6 +1,6 @@
 <script>
   import { T, useTask } from "@threlte/core";
-  import { OrbitControls, useGltf } from "@threlte/extras";
+  import { OrbitControls, useGltf} from "@threlte/extras";
   import fragShader from "/src/lib/assets/shaders/backgroud-fragment.glsl?raw";
   import vertexShader from "/src/lib/assets/shaders/vertex.glsl?raw";
   import { base } from '$app/paths'
@@ -105,11 +105,9 @@
 
 {#if $gltfText}
   <T.Mesh
-    scale={20}
+    scale={3}
     rotation.x = {Math.PI / 2}
     geometry={$gltfText.nodes.Text.geometry}
-    position.y={-37}
-    position.z ={30}
   >
     <T.MeshStandardMaterial
       metalness={0.7}
@@ -120,4 +118,3 @@
     />
   </T.Mesh>
 {/if}
-
