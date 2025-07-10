@@ -24,7 +24,7 @@
 
 {#if $gltfSun && $gltfMoon}
 <T.Mesh
-  position={[$viewport.width / 2 - 1, $viewport.height / 2 - 1, 0]}
+  position={[($viewport.width / 2) - 1, ($viewport.height / 2) - 1, 0]}
   onclick={() => onselect()}
   scale={0.33}
   rotation.x={Math.PI / 2}

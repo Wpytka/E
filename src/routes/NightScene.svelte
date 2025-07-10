@@ -1,6 +1,6 @@
 <script>
   import { T, useTask } from "@threlte/core";
-  import { OrbitControls, useGltf } from "@threlte/extras";
+  import { OrbitControls, useGltf, interactivity } from "@threlte/extras";
 
   import fragShader from "/src/lib/assets/shaders/backgroud-fragment.glsl?raw";
   import vertexShader from "/src/lib/assets/shaders/vertex.glsl?raw";
@@ -12,14 +12,22 @@
   import { base } from "$app/paths";
 
   let rotation = $state(0);
-  let woble = $state(0);
-  let bob = $state(0)
+  let wobble = $state(0);
 
-  let newGreen = "#8DD8FF";
-  let newOrange = "#FF4545";
+  let ePosX = $state(0);
+  let ePosY = $state(0);
+  let ePosZ = $state(0);
 
-  let currentColor = $state(newGreen);
-  let colorSwapCounter = $state(0);
+  let nudged = $state(false);
+
+  const initialVelocity = 9.0
+  const acceleration = -9.0
+  const totalNudgeTime = 1.0
+
+  let velocity = $state(initialVelocity);
+  let nudgeTime = $state(totalNudgeTime);
+
+  interactivity();
 
   let uniforms = {
     uTime: { value: 0 },
@@ -42,31 +50,44 @@
   }
 
   useTask((delta) => {
-    rotation += delta / 2;
     uniforms.uTime.value += delta;
     neonUniforms.u_time.value += delta;
     ballonUnofrms.u_time.value += delta;
 
-    woble = Math.sin(rotation) / 6;
+    rotation += delta / 2;
+    wobble = Math.sin(rotation) / 6;
 
-    bob = Math.cos(rotation)
+    let bob = Math.sin(rotation)
 
-    colorSwapCounter += delta;
-
-    if (colorSwapCounter > 2.5) {
-      colorSwapCounter = 0;
-
-      if (currentColor == newGreen) {
-        currentColor = newOrange;
-      } else {
-        currentColor = newGreen;
+    if (nudged){
+      if (nudgeTime <= 0)
+      {
+        nudgeTime = totalNudgeTime;
+        nudged = false;
+        velocity = initialVelocity;
+        bob = 0;
       }
+      else {
+        ePosZ -= velocity * delta
+        ePosY += velocity * delta * Math.sign(bob)
+        
+        nudgeTime -= delta
+        velocity = velocity + acceleration*delta
+      }
+    }
+    else {
+      ePosY += (bob*1.44)/100
+      ePosZ += (bob)/100
     }
   });
 
   const gltfArrow = useGltf(`${base}/arrow.glb`);
   const gltfText = useGltf(`${base}/engineered.glb`);
   const gltfBallonE = useGltf(`${base}/BallonE.glb`)
+
+  function nudge(){
+    nudged = true
+  }
 </script>
 
 <T.PerspectiveCamera makeDefault position={[0, 3, 150]} fov={65}>
@@ -85,12 +106,14 @@
 
 {#if $gltfBallonE}
   <T.Mesh
+    onclick={() => nudge()}
     scale={30}
     rotation.x={Math.PI / 2}
-    rotation.y={woble/4}
-    rotation.z={woble/3 + woble*0.3}
-    position.z={bob}
-    position.y={bob*1.44}
+    rotation.y={wobble/4}
+    rotation.z={wobble/3 + wobble*0.3}
+    position.x={ePosX}
+    position.y={ePosY}
+    position.z={ePosZ}
     geometry={$gltfBallonE.nodes.Text.geometry}
   >
     <T.ShaderMaterial
