@@ -3,7 +3,6 @@
     import Scene from './Scene.svelte'
 
     let scene = $state()
-    export const prerender = true;
     
 </script>
 
