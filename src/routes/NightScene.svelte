@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { T, useTask } from "@threlte/core";
   import { OrbitControls, useGltf, interactivity } from "@threlte/extras";
 
@@ -19,10 +19,11 @@
   let ePosZ = $state(0);
 
   let nudged = $state(false);
+  let nudgeDirection = $state({});
 
-  const initialVelocity = 9.0
-  const acceleration = -9.0
-  const totalNudgeTime = 1.0
+  const initialVelocity = 9.0;
+  const acceleration = -9.0;
+  const totalNudgeTime = 1.0;
 
   let velocity = $state(initialVelocity);
   let nudgeTime = $state(totalNudgeTime);
@@ -39,15 +40,15 @@
 
   let neonUniforms = {
     u_time: { value: 0.0 },
-    u_neon_color: { value: [0.700,0.08,0.314] },
-    u_cameraPosition: {value:[0, 3, 150]}
+    u_neon_color: { value: [0.7, 0.08, 0.314] },
+    u_cameraPosition: { value: [0, 3, 150] },
   };
 
   let ballonUnofrms = {
-    u_lightPosition: {value:[300, 3, 150]},
-    u_color: {value:[0.9, 0.1, 0.144]},
-    u_time:{value: 0.0}
-  }
+    u_lightPosition: { value: [100, 100, 100] },
+    u_color: { value: [0.9, 0.1, 0.144] },
+    u_time: { value: 0.0 },
+  };
 
   useTask((delta) => {
     uniforms.uTime.value += delta;
@@ -57,36 +58,89 @@
     rotation += delta / 2;
     wobble = Math.sin(rotation) / 6;
 
-    let bob = Math.sin(rotation)
+    let bob = Math.sin(rotation);
 
-    if (nudged){
-      if (nudgeTime <= 0)
-      {
+    if (nudged) {
+      if (nudgeTime <= 0) {
         nudgeTime = totalNudgeTime;
         nudged = false;
         velocity = initialVelocity;
         bob = 0;
+        nudgeDirection = {};
+      } else {
+        switch (nudgeDirection.faceAxis) {
+          case "y":
+            if (nudgeDirection.face) {
+              ePosZ -= velocity * delta;
+            } else {
+              ePosZ += velocity * delta;
+            }
+            break;
+          case "z":
+            if (nudgeDirection.face) {
+              ePosY += velocity * delta;
+            } else {
+              ePosY -= velocity * delta;
+            }
+            break;
+          case "x":
+            if (nudgeDirection.face) {
+              ePosX -= velocity * delta;
+            } else {
+              ePosX += velocity * delta;
+            }
+            break;
+        }
+        nudgeTime -= delta;
+        velocity = velocity + acceleration * delta;
       }
-      else {
-        ePosZ -= velocity * delta
-        ePosY += velocity * delta * Math.sign(bob)
-        
-        nudgeTime -= delta
-        velocity = velocity + acceleration*delta
-      }
-    }
-    else {
-      ePosY += (bob*1.44)/100
-      ePosZ += (bob)/100
+    } else {
+      ePosY += (bob * 1.44) / 100;
+      ePosZ += bob / 100;
     }
   });
 
   const gltfArrow = useGltf(`${base}/arrow.glb`);
   const gltfText = useGltf(`${base}/engineered.glb`);
-  const gltfBallonE = useGltf(`${base}/BallonE.glb`)
+  const gltfBallonE = useGltf(`${base}/BallonE.glb`);
 
-  function nudge(){
-    nudged = true
+  function nudge(e) {
+    nudged = true;
+
+    nudgeDirection = getCubeFace(e.intersections[0]);
+  }
+
+  function getCubeFace(intersection) {
+    const normal = intersection.normal;
+
+    let faceName;
+    let faceAxis;
+
+    // Find the dominant axis of the normal
+    const absNormal = {
+      x: Math.abs(normal.x),
+      y: Math.abs(normal.y),
+      z: Math.abs(normal.z),
+    };
+
+    if (absNormal.x > absNormal.y && absNormal.x > absNormal.z) {
+      // X-axis dominant
+      faceName = normal.x > 0;
+      faceAxis = "x";
+    } else if (absNormal.y > absNormal.x && absNormal.y > absNormal.z) {
+      // Y-axis dominant
+      faceName = normal.y > 0;
+      faceAxis = "y";
+    } else {
+      // Z-axis dominant
+      faceName = normal.z > 0;
+      faceAxis = "z";
+    }
+
+    return {
+      face: faceName,
+      faceAxis: faceAxis,
+    };
   }
 </script>
 
@@ -106,11 +160,11 @@
 
 {#if $gltfBallonE}
   <T.Mesh
-    onclick={() => nudge()}
+    onclick={(e) => nudge(e)}
     scale={30}
     rotation.x={Math.PI / 2}
-    rotation.y={wobble/4}
-    rotation.z={wobble/3 + wobble*0.3}
+    rotation.y={wobble / 4}
+    rotation.z={wobble / 3 + wobble * 0.3}
     position.x={ePosX}
     position.y={ePosY}
     position.z={ePosZ}
@@ -118,7 +172,7 @@
   >
     <T.ShaderMaterial
       uniforms={ballonUnofrms}
-      vertexShader={vertexShader}
+      {vertexShader}
       fragmentShader={ballonFragment}
       side={0}
     />

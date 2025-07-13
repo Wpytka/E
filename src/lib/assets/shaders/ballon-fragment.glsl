@@ -46,6 +46,7 @@ void main() {
         sin(u_time * 0.3) * 1.5,
         sin(u_time * 0.2) * 1.0
     );
+    
     vec3 lightDir = normalize(lightPos - v_worldPosition);
     
     vec3 baseColor = u_color;
@@ -61,7 +62,7 @@ void main() {
     // Specular reflection (very shiny)
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 64.0);
-    vec3 specular = vec3(1.0) * spec * 0.9;
+    vec3 specular = vec3(1.0) * spec * 2.0;
     
     // Additional specular highlight for extra shininess
     float spec2 = pow(max(dot(viewDir, reflectDir), 0.0), 16.0);
@@ -71,17 +72,12 @@ void main() {
     float rim = fresnel(viewDir, normal, 4.0);
     vec3 rimColor = vec3(0.8, 0.9, 1.0) * rim * 0.1;
     
-    // Environmental reflection (fake)
-    vec2 envUV = v_worldPosition.xy * 0.5 + 0.5;
-    float envReflection = smoothNoise(envUV * 4.0 + u_time * 0.1) * 0.2;
-    vec3 envColor = vec3(0.3, 0.6, 0.9) * envReflection;
-    
     // Subsurface scattering effect
     float backLight = max(dot(normal, -lightDir), 0.0);
     vec3 subsurface = baseColor * backLight * 0.2;
     
     // Combine all lighting components
-    vec3 finalColor = diffuse + specular + rimColor + envColor + subsurface;
+    vec3 finalColor = diffuse + specular + rimColor  + subsurface ;
     
     // Add ambient lighting
     finalColor += baseColor * 0.2;

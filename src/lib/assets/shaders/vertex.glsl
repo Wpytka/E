@@ -8,7 +8,7 @@ void main() {
 
   vUvs = uv;
 
-  vec4 worldPos = modelViewMatrix * vec4(position, 1.0);
+  vec4 worldPos = modelMatrix * vec4(position, 1.0);
   v_worldPosition = worldPos.xyz;
   v_normal = normalize(normalMatrix * normal);
 

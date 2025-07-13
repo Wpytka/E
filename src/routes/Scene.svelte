@@ -8,7 +8,7 @@
 
   let rotation = $state(0);
   let woble = $state(0);
-  let darkMode = $state(false);
+  let darkMode = $state(true);
 
   let newGreen = "#8DD8FF";
   let newOrange = "#FF4545";
@@ -56,9 +56,7 @@
   <OrbitControls />
 </T.PerspectiveCamera>
 
-<T.DirectionalLight intensity={1} position={[0, 3, 150]}/>
-
-<T.DirectionalLight intensity={1} position={[20, 60, 10]}/>
+<T.DirectionalLight intensity={1} position={[100, 100, 100]}/>
 <T.AmbientLight intensity={1}/>
 
 <HUD>
