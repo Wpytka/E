@@ -59,9 +59,9 @@
 <T.DirectionalLight intensity={1} position={[100, 100, 100]}/>
 <T.AmbientLight intensity={1}/>
 
-<HUD>
+<!-- <HUD>
   <HudScene darkMode={darkMode} onselect={changeMode}></HudScene>
-</HUD>
+</HUD> -->
 
 {#if darkMode}
 <NightScene></NightScene>

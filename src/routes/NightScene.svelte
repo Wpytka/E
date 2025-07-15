@@ -4,9 +4,7 @@
 
   import fragShader from "/src/lib/assets/shaders/backgroud-fragment.glsl?raw";
   import vertexShader from "/src/lib/assets/shaders/vertex.glsl?raw";
-
   import neonFragment from "/src/lib/assets/shaders/neon-fragment.glsl?raw";
-
   import ballonFragment from "/src/lib/assets/shaders/ballon-fragment.glsl?raw";
 
   import { base } from "$app/paths";
@@ -70,29 +68,21 @@
       } else {
         switch (nudgeDirection.faceAxis) {
           case "y":
-            if (nudgeDirection.face) {
-              ePosZ -= velocity * delta;
-            } else {
-              ePosZ += velocity * delta;
-            }
+              ePosZ = nudgeDirection.face ? (ePosZ - velocity * delta) : (ePosZ + velocity * delta)
+              ePosY = nudgeDirection.quadV ? (ePosY + (velocity/2) * delta) : (ePosY - (velocity/2) * delta)
+              ePosX = nudgeDirection.quadH ? (ePosX + (velocity/2) * delta) : (ePosX - (velocity/2) * delta)
             break;
           case "z":
-            if (nudgeDirection.face) {
-              ePosY += velocity * delta;
-            } else {
-              ePosY -= velocity * delta;
-            }
+            ePosY = nudgeDirection.face ? (ePosY + velocity * delta) : (ePosY - velocity * delta)
             break;
           case "x":
-            if (nudgeDirection.face) {
-              ePosX -= velocity * delta;
-            } else {
-              ePosX += velocity * delta;
-            }
+            ePosX = nudgeDirection.face ? (ePosX - velocity * delta) : (ePosX + velocity * delta)
             break;
         }
         nudgeTime -= delta;
-        velocity = velocity + acceleration * delta;
+        
+        let adjustedAcceleration = acceleration + (nudgeTime - totalNudgeTime)
+        velocity = velocity + adjustedAcceleration * delta;
       }
     } else {
       ePosY += (bob * 1.44) / 100;
@@ -112,9 +102,11 @@
 
   function getCubeFace(intersection) {
     const normal = intersection.normal;
-
+    
     let faceName;
     let faceAxis;
+    let quadV;
+    let quadH;
 
     // Find the dominant axis of the normal
     const absNormal = {
@@ -127,19 +119,27 @@
       // X-axis dominant
       faceName = normal.x > 0;
       faceAxis = "x";
+      quadV = false;
+      quadH = false;
     } else if (absNormal.y > absNormal.x && absNormal.y > absNormal.z) {
       // Y-axis dominant
       faceName = normal.y > 0;
       faceAxis = "y";
+      quadV = intersection.eventObject.position.y - intersection.point.y > 0;
+      quadH = intersection.eventObject.position.x - intersection.point.x > 0;;
     } else {
       // Z-axis dominant
       faceName = normal.z > 0;
       faceAxis = "z";
+      quadV = false;
+      quadH = false;
     }
 
     return {
       face: faceName,
       faceAxis: faceAxis,
+      quadV: quadV,
+      quadH:quadH
     };
   }
 </script>
