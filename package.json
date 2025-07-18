@@ -23,6 +23,8 @@
 	"dependencies": {
 		"@threlte/core": "^8.0.1",
 		"@threlte/extras": "^9.0.1",
+		"@threlte/rapier":"^3.1.4",
+		"@dimforge/rapier3d-compat":"^0.18.0-beta.0",
 		"three": "^0.174.0",
 		"@sveltejs/adapter-auto": "^4.0.0",
 		"@sveltejs/adapter-static": "^3.0.8",

@@ -1,6 +1,7 @@
 <script>
     import {Canvas} from '@threlte/core'
     import Scene from './Scene.svelte'
+    import { Debug, World } from '@threlte/rapier'
 
     let scene = $state()
     
@@ -8,8 +9,10 @@
 
 
 <div class="canvas-container">
-<Canvas >
+<Canvas>
+    <World gravity={[0,0,0]}>
     <Scene bind:this={scene} linear flat/>
+    </World>
 </Canvas>
 </div>
 
